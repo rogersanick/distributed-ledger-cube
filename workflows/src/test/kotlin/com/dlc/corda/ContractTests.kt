@@ -1,4 +1,4 @@
-package com.template.contracts
+package com.dlc.corda
 
 import net.corda.testing.node.MockServices
 import org.junit.Test

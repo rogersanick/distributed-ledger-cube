@@ -34,8 +34,8 @@ class FlowTests {
         network.runNetwork()
         val cleanCubeState = futureWithCleanCube.getOrThrow()
         assertEquals(
-                CubeState(testIdentity.party, listOf(testIdentity.party)).cubeState,
-                cleanCubeState.cubeState
+                CubeState(testIdentity.party, listOf(testIdentity.party)).state,
+                cleanCubeState.state
         )
     }
 }

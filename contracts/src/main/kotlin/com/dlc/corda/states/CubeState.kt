@@ -1,9 +1,11 @@
 package com.dlc.corda.states
 
 import com.dlc.corda.contracts.CubeContract
+import com.dlc.corda.utilities.*
 import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.ContractState
-import net.corda.core.flows.FlowException
+import net.corda.core.contracts.LinearState
+import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.Party
 import net.corda.core.serialization.CordaSerializable
 
@@ -20,46 +22,41 @@ import net.corda.core.serialization.CordaSerializable
 
 @BelongsToContract(CubeContract::class)
 @CordaSerializable
-data class CubeState(
+class CubeState private constructor(
         val issuer: Party,
-        val solvers: List<Party>
-) : ContractState {
-    val cubeState: List<ComponentCube> = generateCleanCubeState()
+        val solvers: List<Party>,
+        val state: List<ComponentCube>,
+        override val linearId: UniqueIdentifier
+) : ContractState, LinearState {
+
+    constructor(issuer: Party, solvers: List<Party>): this(issuer, solvers, generateCleanCubeState(), UniqueIdentifier())
+
+    fun updateCubeState(newState: List<ComponentCube>) = CubeState(issuer, solvers, newState, linearId)
+
     init {
-        if (cubeState.size != 27) {
+        if (state.size != 27) {
             throw CubeInitializationException("A cube state must have exactly 27 cubes")
         }
     }
 
     override val participants: List<Party> = solvers
-}
 
-/**
- * A class to represent a single component cube as part of the Rubik's cube puzzle.
- */
-data class ComponentCube(
-        private val side1: CubeColor?,
-        private val side2: CubeColor?,
-        private val side3: CubeColor?,
-        private val side4: CubeColor?,
-        private val side5: CubeColor?,
-        private val side6: CubeColor?
-) {
-    val sides = listOf(
-            side1, side2, side3, side4, side5, side6
-    )
-}
-
-/**
- * An enum class representing the colors the comprise all component cubes of the Rubik's cube puzzle.
- */
-enum class CubeColor {
-    WHITE,
-    YELLOW,
-    GREEN,
-    BLUE,
-    ORANGE,
-    RED
+    fun handleMove(move: Moves): CubeState {
+        return when(move) {
+            Moves.F -> { updateCubeState(rotateF(state)) }
+            Moves.Fi -> { updateCubeState(rotateFi(state)) }
+            Moves.B -> { updateCubeState(rotateB(state)) }
+            Moves.Bi -> { updateCubeState(rotateBi(state)) }
+            Moves.L -> { updateCubeState(rotateL(state)) }
+            Moves.Li -> { updateCubeState(rotateLi(state)) }
+            Moves.R -> { updateCubeState(rotateR(state)) }
+            Moves.Ri -> { updateCubeState(rotateRi(state)) }
+            Moves.D -> { updateCubeState(rotateD(state)) }
+            Moves.Di -> { updateCubeState(rotateDi(state)) }
+            Moves.U -> { updateCubeState(rotateU(state)) }
+            Moves.Ui -> { updateCubeState(rotateUi(state)) }
+        }
+    }
 }
 
 /**

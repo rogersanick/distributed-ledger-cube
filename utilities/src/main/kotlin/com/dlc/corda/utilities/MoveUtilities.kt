@@ -1,24 +1,23 @@
 package com.dlc.corda.utilities
 
-import java.awt.Component
 import java.lang.IllegalArgumentException
 
 private val transformations = listOf("F", "Fi", "B", "Bi", "U", "Ui", "D", "Di", "L", "Li", "R", "Ri")
 
-fun transform(currCubeState: List<ComponentCube>, transformation: String) {
+fun transform(currCubeState: List<CubeFace>, transformation: String) {
     if (transformation !in transformations)
         throw IllegalArgumentException("The specified transformation does not exist.")
 }
 
-fun List<MutableComponentCube>.toImmutableState(): List<ComponentCube> {
-    return this.map { ComponentCube(it) }
+fun List<MutableCubeFace>.toImmutableState(): List<CubeFace> {
+    return this.map { CubeFace(it) }
 }
 
-fun List<ComponentCube>.toMutableState(): List<MutableComponentCube> {
-    return this.map { it.toMutableComponentCube() }
+fun List<CubeFace>.toMutableState(): List<MutableCubeFace> {
+    return this.map { it.toMutableCubeFace() }
 }
 
-fun rotateF(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateF(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesFrontClockwise()
@@ -26,7 +25,7 @@ fun rotateF(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateFi(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateFi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesFrontCounterClockwise()
@@ -34,7 +33,7 @@ fun rotateFi(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateB(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateB(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesBackClockwise()
@@ -42,7 +41,7 @@ fun rotateB(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateBi(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateBi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesBackCounterClockwise()
@@ -50,7 +49,7 @@ fun rotateBi(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateL(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateL(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesLeftClockwise()
@@ -58,7 +57,7 @@ fun rotateL(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateLi(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateLi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesLeftCounterClockwise()
@@ -66,7 +65,7 @@ fun rotateLi(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateR(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateR(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesRightClockwise()
@@ -74,7 +73,7 @@ fun rotateR(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateRi(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateRi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesRightCounterClockwise()
@@ -82,7 +81,7 @@ fun rotateRi(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateU(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateU(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesUpClockwise()
@@ -90,7 +89,7 @@ fun rotateU(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateUi(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateUi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesUpCounterClockwise()
@@ -98,7 +97,7 @@ fun rotateUi(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateD(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateD(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesDownClockwise()
@@ -106,7 +105,7 @@ fun rotateD(state: List<ComponentCube>): List<ComponentCube> {
             .toImmutableState()
 }
 
-fun rotateDi(state: List<ComponentCube>): List<ComponentCube> {
+fun rotateDi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesDownCounterClockwise()

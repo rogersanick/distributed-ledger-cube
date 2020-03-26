@@ -1,4 +1,4 @@
-package com.dlc.corda.states
+package com.dlc.corda.utilities
 
 import net.corda.core.flows.FlowException
 

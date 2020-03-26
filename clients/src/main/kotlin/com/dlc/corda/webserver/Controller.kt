@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
  * Define your API endpoints here.
  */
 @RestController
-@RequestMapping("/") // The paths for HTTP requests are relative to this base path.
+@RequestMapping("/api/") // The paths for HTTP requests are relative to this base path.
 class Controller(rpc: NodeRPCConnection) {
 
     companion object {
@@ -18,7 +18,7 @@ class Controller(rpc: NodeRPCConnection) {
 
     private val proxy = rpc.proxy
 
-    @GetMapping(value = ["/templateendpoint"], produces = ["text/plain"])
+    @GetMapping(value = ["cubes"], produces = ["text/plain"])
     private fun templateendpoint(): String {
         return "Define an endpoint here."
     }

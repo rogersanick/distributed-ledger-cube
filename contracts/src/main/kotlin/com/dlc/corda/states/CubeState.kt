@@ -1,5 +1,6 @@
 package com.dlc.corda.states
 
+import co.paralleluniverse.fibers.Suspendable
 import com.dlc.corda.contracts.CubeContract
 import com.dlc.corda.utilities.*
 import net.corda.core.contracts.BelongsToContract
@@ -22,25 +23,30 @@ import net.corda.core.serialization.CordaSerializable
 
 @BelongsToContract(CubeContract::class)
 @CordaSerializable
-class CubeState private constructor(
+data class CubeState private constructor(
         val issuer: Party,
         val solvers: List<Party>,
-        val state: List<ComponentCube>,
+        val state: List<CubeFace>,
         override val linearId: UniqueIdentifier
 ) : ContractState, LinearState {
 
     constructor(issuer: Party, solvers: List<Party>): this(issuer, solvers, generateCleanCubeState(), UniqueIdentifier())
 
-    fun updateCubeState(newState: List<ComponentCube>) = CubeState(issuer, solvers, newState, linearId)
+    @Suspendable
+    fun updateCubeState(newState: List<CubeFace>) = CubeState(issuer, solvers, newState, linearId)
+
+    @Suspendable
+    fun updateSolvers(newSolvers: List<Party>) = CubeState(issuer, newSolvers, state, linearId)
 
     init {
-        if (state.size != 27) {
-            throw CubeInitializationException("A cube state must have exactly 27 cubes")
+        if (state.size != 6) {
+            throw CubeInitializationException("A cube state must have exactly 6 cube faces")
         }
     }
 
     override val participants: List<Party> = solvers
 
+    @Suspendable
     fun handleMove(move: Moves): CubeState {
         return when(move) {
             Moves.F -> { updateCubeState(rotateF(state)) }
@@ -62,35 +68,15 @@ class CubeState private constructor(
 /**
  * A utility function designed to generate a clean cube state.
  */
-private fun generateCleanCubeState(): List<ComponentCube> {
+@Suspendable
+fun generateCleanCubeState(): List<CubeFace> {
     return listOf(
-        ComponentCube(CubeColor.WHITE, null, null, CubeColor.GREEN, CubeColor.ORANGE, null),
-        ComponentCube(null, null, null, CubeColor.GREEN, CubeColor.ORANGE, null),
-        ComponentCube(null, CubeColor.YELLOW, null, CubeColor.GREEN, CubeColor.ORANGE, null),
-        ComponentCube(CubeColor.WHITE, null, null, null, CubeColor.ORANGE, null),
-        ComponentCube(null, null, null, null, CubeColor.ORANGE, null),
-        ComponentCube(null, CubeColor.YELLOW, null, null, CubeColor.ORANGE, null),
-        ComponentCube(CubeColor.WHITE, null, CubeColor.BLUE, null, CubeColor.ORANGE, null),
-        ComponentCube(null, null, CubeColor.BLUE, null, CubeColor.ORANGE, null),
-        ComponentCube(null, CubeColor.YELLOW, CubeColor.BLUE, null, CubeColor.ORANGE, null),
-        ComponentCube(CubeColor.WHITE, null, null, CubeColor.GREEN, null, null),
-        ComponentCube(null, null, null, CubeColor.GREEN, null, null),
-        ComponentCube(null, CubeColor.YELLOW, null, CubeColor.GREEN, null, null),
-        ComponentCube(CubeColor.WHITE, null, null, null, null, null),
-        ComponentCube(CubeColor.WHITE, CubeColor.YELLOW, CubeColor.WHITE, CubeColor.WHITE, CubeColor.WHITE, CubeColor.WHITE),
-        ComponentCube(null, CubeColor.YELLOW, null, null, null, null),
-        ComponentCube(CubeColor.WHITE, null, CubeColor.BLUE, null, null, null),
-        ComponentCube(null, null, CubeColor.BLUE, null, null, null),
-        ComponentCube(null, CubeColor.YELLOW, CubeColor.BLUE, null, null, null),
-        ComponentCube(CubeColor.WHITE, null, null, CubeColor.GREEN, null, CubeColor.RED),
-        ComponentCube(null, null, null, CubeColor.GREEN, null, CubeColor.RED),
-        ComponentCube(null, CubeColor.YELLOW, null, CubeColor.GREEN, null, CubeColor.RED),
-        ComponentCube(CubeColor.WHITE, null, null, null, null, CubeColor.RED),
-        ComponentCube(null, null, null, null, null, CubeColor.RED),
-        ComponentCube(null, CubeColor.YELLOW, null, null, null, CubeColor.RED),
-        ComponentCube(CubeColor.WHITE, null, CubeColor.BLUE, null, null, CubeColor.RED),
-        ComponentCube(null, null, CubeColor.BLUE, null, null, CubeColor.RED),
-        ComponentCube(null, CubeColor.YELLOW, CubeColor.BLUE, null, null, CubeColor.RED)
+        CubeFace(List(9) { CubeColor.ORANGE }),
+        CubeFace(List(9) { CubeColor.BLUE }),
+        CubeFace(List(9) { CubeColor.WHITE }),
+        CubeFace(List(9) { CubeColor.RED }),
+        CubeFace(List(9) { CubeColor.YELLOW }),
+        CubeFace(List(9) { CubeColor.GREEN })
     )
 }
 

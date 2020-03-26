@@ -32,6 +32,12 @@ sourceSets {
     }
 }
 
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-Xnormalize-constructor-calls=enable"]
+    }
+}
+
 configurations {
     integrationTestCompile.extendsFrom testCompile
     integrationTestRuntime.extendsFrom testRuntime

@@ -1,5 +1,8 @@
 package com.dlc.corda.utilities
 
+import net.corda.core.serialization.CordaSerializable
+
+@CordaSerializable
 enum class Moves {
     F, Fi,
     B, Bi,

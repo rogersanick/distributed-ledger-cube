@@ -11,7 +11,6 @@ import net.corda.core.utilities.ProgressTracker
 // *********
 // * Flows *
 // *********
-@InitiatingFlow
 @StartableByRPC
 class IssueCubeFlow(private val solvers: List<Party>) : FlowLogic<CubeState>() {
     override val progressTracker = ProgressTracker()

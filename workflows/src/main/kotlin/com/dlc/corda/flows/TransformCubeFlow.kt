@@ -2,8 +2,8 @@ package com.dlc.corda.flows
 
 import co.paralleluniverse.fibers.Suspendable
 import com.dlc.corda.contracts.CubeContract
-import com.dlc.corda.states.CubeState
 import com.dlc.corda.utilities.Moves
+import com.dlc.corda.states.CubeState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.contracts.requireThat
 import net.corda.core.flows.*

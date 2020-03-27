@@ -1,5 +1,8 @@
 package com.dlc.corda.webserver
 
+import com.dlc.corda.states.CubeState
+import com.google.gson.Gson
+import net.corda.core.messaging.vaultQueryBy
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -19,7 +22,7 @@ class Controller(rpc: NodeRPCConnection) {
     private val proxy = rpc.proxy
 
     @GetMapping(value = ["cubes"], produces = ["text/plain"])
-    private fun templateendpoint(): String {
-        return "Define an endpoint here."
+    private fun getAllCubes(): String {
+        return Gson().toJson(proxy.vaultQueryBy<CubeState>().states.map { it.state.data.state }.flatten())
     }
 }

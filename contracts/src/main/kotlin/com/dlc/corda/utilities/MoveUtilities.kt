@@ -1,13 +1,6 @@
 package com.dlc.corda.utilities
 
-import java.lang.IllegalArgumentException
-
-private val transformations = listOf("F", "Fi", "B", "Bi", "U", "Ui", "D", "Di", "L", "Li", "R", "Ri")
-
-fun transform(currCubeState: List<CubeFace>, transformation: String) {
-    if (transformation !in transformations)
-        throw IllegalArgumentException("The specified transformation does not exist.")
-}
+import co.paralleluniverse.fibers.Suspendable
 
 fun List<MutableCubeFace>.toImmutableState(): List<CubeFace> {
     return this.map { CubeFace(it) }
@@ -17,6 +10,7 @@ fun List<CubeFace>.toMutableState(): List<MutableCubeFace> {
     return this.map { it.toMutableCubeFace() }
 }
 
+@Suspendable
 fun rotateF(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -25,6 +19,7 @@ fun rotateF(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateFi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -33,6 +28,7 @@ fun rotateFi(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateB(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -41,6 +37,7 @@ fun rotateB(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateBi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -49,6 +46,7 @@ fun rotateBi(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateL(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -65,6 +63,7 @@ fun rotateLi(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateR(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -73,6 +72,7 @@ fun rotateR(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateRi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -81,6 +81,7 @@ fun rotateRi(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateU(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -89,6 +90,7 @@ fun rotateU(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateUi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -97,6 +99,7 @@ fun rotateUi(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateD(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
@@ -105,6 +108,7 @@ fun rotateD(state: List<CubeFace>): List<CubeFace> {
             .toImmutableState()
 }
 
+@Suspendable
 fun rotateDi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()

@@ -1,5 +1,7 @@
 package com.dlc.corda.utilities
 
+import com.dlc.corda.utilities.MutableCubeFace
+
 // ROTATE FRONT FACE EDGES
 // TODO: Research matrix transformations
 fun List<MutableCubeFace>.handleRotateEdgesFrontClockwise(): List<MutableCubeFace> {

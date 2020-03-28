@@ -42,6 +42,22 @@ class FlowTests {
     }
 
     @Test
+    fun `A node can issue a cube with multiple solvers onto the ledger`() {
+        val cleanCubeState = a.runFlowAndReturn(
+                IssueCubeFlow(
+                        listOf(
+                                a.identity(),
+                                b.identity()
+                        )
+                )
+        )
+        assertEquals(
+                generateCleanCubeState(),
+                cleanCubeState.state
+        )
+    }
+
+    @Test
     fun `A node can edit the solvers of a cube`() {
         val cleanCubeState = a.runFlowAndReturn(IssueCubeFlow(listOf(a.info.legalIdentities.first())))
         val txNewSolvers = a.runFlowAndReturn(EditSolversFlow(cleanCubeState.linearId, listOf(a.identity(), b.identity())))

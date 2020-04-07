@@ -1,14 +1,17 @@
 package com.dlc.corda.webserver
 
+import com.dlc.corda.flows.TransformCubeFlow
 import com.dlc.corda.states.CubeState
 import com.dlc.corda.utilities.CubeFace
+import com.dlc.corda.utilities.Moves
+import net.corda.core.contracts.UniqueIdentifier
+import net.corda.core.crypto.SecureHash
 import net.corda.core.identity.Party
+import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.vaultQueryBy
+import net.corda.core.utilities.getOrThrow
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import javax.json.Json
 import javax.json.JsonArray
 import javax.json.JsonObject
@@ -18,7 +21,7 @@ import javax.json.JsonObject
  */
 @CrossOrigin(origins = arrayOf("*"), maxAge = 3600)
 @RestController
-@RequestMapping("/api/") // The paths for HTTP requests are relative to this base path.
+@RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
 class Controller(rpc: NodeRPCConnection) {
 
     companion object {
@@ -27,15 +30,32 @@ class Controller(rpc: NodeRPCConnection) {
 
     private val proxy = rpc.proxy
 
-    @GetMapping(value = ["cubes"], produces = ["text/plain"])
+    @GetMapping(value = ["/cube"], produces = ["text/plain"])
     private fun getAllCubes(): String {
         val jsonArray = Json.createArrayBuilder()
         val results = proxy.vaultQueryBy<CubeState>().states
-                .forEach { jsonArray.add(it.state.data.toJSONArrayOfCubeFaces()) }
+                .forEach { jsonArray.add(it.state.data.toJSON()) }
         return  jsonArray.build().toString()
     }
 
-    private fun CubeState.toJSONArrayOfCubeFaces(): JsonObject {
+    @PostMapping(value = ["/cube"])
+    private fun makeMove(@RequestBody payload: CubeMoves): String {
+        val parsedUniqueIdentifier = UniqueIdentifier.fromString(payload.cubeId)
+        println(payload.cubeId)
+        println(payload.moves)
+        val stx = this.proxy.startFlow(::TransformCubeFlow, parsedUniqueIdentifier, payload.moves).returnValue.getOrThrow()
+        return stx.coreTransaction.id.toString()
+    }
+
+    /**
+     * Simple class to help with de-serializing JSON from cube client.
+     */
+    private class CubeMoves(
+        val cubeId: String,
+        val moves: ArrayList<Moves>
+    )
+
+    private fun CubeState.toJSON(): JsonObject {
         return Json.createObjectBuilder()
                 .add("linearId", this.linearId.toString())
                 .add("state", this.state.toJSONArrayOfCubeFaces())

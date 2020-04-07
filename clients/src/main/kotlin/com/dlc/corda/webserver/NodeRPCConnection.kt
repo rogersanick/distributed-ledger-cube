@@ -2,6 +2,7 @@ package com.dlc.corda.webserver
 
 import net.corda.client.rpc.CordaRPCClient
 import net.corda.client.rpc.CordaRPCConnection
+import net.corda.client.rpc.RPCException
 import net.corda.core.messaging.CordaRPCOps
 import net.corda.core.utilities.NetworkHostAndPort
 import org.springframework.beans.factory.annotation.Value
@@ -41,8 +42,17 @@ open class NodeRPCConnection(
     fun initialiseNodeRPCConnection() {
             val rpcAddress = NetworkHostAndPort(host, rpcPort)
             val rpcClient = CordaRPCClient(rpcAddress)
-            val rpcConnection = rpcClient.start(username, password)
-            proxy = rpcConnection.proxy
+            val rpcConnection = try {
+                val rpcConnection = rpcClient.start(username, password)
+                proxy = rpcConnection.proxy
+                rpcConnection
+            } catch(ex: RPCException) {
+                println("Unable to connect to the node")
+                println(ex.message)
+                Thread.sleep(5000)
+                initialiseNodeRPCConnection()
+            }
+
     }
 
     @PreDestroy

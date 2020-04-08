@@ -27,6 +27,10 @@ class CubeContract : Contract {
                 val cubeState = tx.outputsOfType<CubeState>().single()
                 "The CubeState produced should be a unaltered state" using (cubeState.state == generateCleanCubeState())
             }
+            is Commands.Exit -> requireThat {
+                "There should be no output for this transaction" using (tx.outputStates.isEmpty())
+                "There should be one input state of type cube state" using (tx.inputStates.single() is CubeState)
+            }
             is Commands.EditSolvers -> requireThat {
                 "There should only be one input to this transaction" using (tx.inputStates.size == 1 && tx.outputStates.single() is CubeState)
                 "There should only be one output of type CubeState" using (tx.outputStates.size == 1 && tx.outputStates.single() is CubeState)
@@ -51,6 +55,7 @@ class CubeContract : Contract {
     // Used to indicate the transaction's intent.
     interface Commands : CommandData {
         class Issue : Commands
+        class Exit : Commands
         class EditSolvers: Commands
         class MakeMoves(val moves: List<Moves>) : Commands
     }

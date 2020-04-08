@@ -33,10 +33,16 @@ data class CubeState private constructor(
     constructor(issuer: Party, solvers: List<Party>): this(issuer, solvers, generateCleanCubeState(), UniqueIdentifier())
 
     @Suspendable
+    fun makeMoves(moves: List<Moves>) = moves.fold(this) { accCubeState, move -> accCubeState.handleMove(move) }
+
+    @Suspendable
     fun updateCubeState(newState: List<CubeFace>) = CubeState(issuer, solvers, newState, linearId)
 
     @Suspendable
     fun updateSolvers(newSolvers: List<Party>) = CubeState(issuer, newSolvers, state, linearId)
+
+    @Suspendable
+    fun printableState() = this.state.map { it.faceState.map { color -> color.name.first() } }
 
     init {
         if (state.size != 6) {

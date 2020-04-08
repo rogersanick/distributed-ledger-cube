@@ -1,5 +1,6 @@
 package com.dlc.corda.webserver
 
+import com.dlc.corda.flows.ExitCubeFlow
 import com.dlc.corda.flows.TransformCubeFlow
 import com.dlc.corda.states.CubeState
 import com.dlc.corda.utilities.CubeFace
@@ -9,6 +10,7 @@ import net.corda.core.crypto.SecureHash
 import net.corda.core.identity.Party
 import net.corda.core.messaging.startFlow
 import net.corda.core.messaging.vaultQueryBy
+import net.corda.core.node.services.vault.QueryCriteria
 import net.corda.core.utilities.getOrThrow
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
@@ -33,9 +35,20 @@ class Controller(rpc: NodeRPCConnection) {
     @GetMapping(value = ["/cube"], produces = ["text/plain"])
     private fun getAllCubes(): String {
         val jsonArray = Json.createArrayBuilder()
-        val results = proxy.vaultQueryBy<CubeState>().states
+        proxy.vaultQueryBy<CubeState>().states
                 .forEach { jsonArray.add(it.state.data.toJSON()) }
-        return  jsonArray.build().toString()
+        return jsonArray.build().toString()
+    }
+
+    @GetMapping(value = ["/cube/{id}"], produces = ["text/plain"])
+    private fun getCube(@RequestParam id: String): String {
+        val parsedUniqueIdentifier = UniqueIdentifier.fromString(id)
+        val linearStateQueryCriteria = QueryCriteria
+                .LinearStateQueryCriteria(linearId = listOf(parsedUniqueIdentifier))
+        return proxy.vaultQueryBy<CubeState>(linearStateQueryCriteria)
+                .states.single()
+                .state.data
+                .toJSON().toString()
     }
 
     @PostMapping(value = ["/cube"])
@@ -51,9 +64,22 @@ class Controller(rpc: NodeRPCConnection) {
      * Simple class to help with de-serializing JSON from cube client.
      */
     private class CubeMoves(
-        val cubeId: String,
-        val moves: ArrayList<Moves>
+            val cubeId: String,
+            val moves: ArrayList<Moves>
     )
+
+    @DeleteMapping(value = ["/cube/{id}"])
+    private fun deleteCube(@PathVariable id: String): String {
+        val parsedUniqueIdentifier = UniqueIdentifier.fromString(id)
+        return this.proxy
+                .startFlow(::ExitCubeFlow, parsedUniqueIdentifier).returnValue
+                .getOrThrow().toString()
+    }
+
+    /**
+     * Simple class to help with de-serializing JSON from cube client.
+     */
+    private class CubeId (val cubeId: String)
 
     private fun CubeState.toJSON(): JsonObject {
         return Json.createObjectBuilder()

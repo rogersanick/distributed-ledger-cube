@@ -104,7 +104,7 @@ fun rotateD(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesDownClockwise()
-            .handleRotateCubeFaceClockwise(1)
+            .handleRotateCubeFaceClockwise(5)
             .toImmutableState()
 }
 
@@ -113,6 +113,6 @@ fun rotateDi(state: List<CubeFace>): List<CubeFace> {
     return state
             .toMutableState()
             .handleRotateEdgesDownCounterClockwise()
-            .handleRotateCubeFaceCounterClockwise(1)
+            .handleRotateCubeFaceCounterClockwise(5)
             .toImmutableState()
 }

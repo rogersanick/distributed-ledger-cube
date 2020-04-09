@@ -3,7 +3,6 @@ package com.dlc.corda.flows
 import co.paralleluniverse.fibers.Suspendable
 import com.dlc.corda.contracts.CubeContract
 import com.dlc.corda.states.CubeState
-import net.corda.core.contracts.Requirements.using
 import net.corda.core.contracts.requireThat
 import net.corda.core.flows.*
 import net.corda.core.identity.Party

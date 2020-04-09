@@ -67,6 +67,17 @@ allprojects {
     }
 }
 
+task ganacheSetup {
+    subprojects {
+        if (it.project.name != "clients") {
+            copy {
+                into "${rootDir}/build"
+                from "${buildDir}/libs"
+            }
+        }
+    }
+}
+
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
@@ -92,15 +103,6 @@ dependencies {
     cordaCompile "org.apache.logging.log4j:log4j-slf4j-impl:${log4j_version}"
     cordaCompile "org.apache.logging.log4j:log4j-web:${log4j_version}"
     cordaCompile "org.slf4j:jul-to-slf4j:$slf4j_version"
-}
-
-cordapp {
-    info {
-        name "CorDapp Template"
-        vendor "Corda Open Source"
-        targetPlatformVersion corda_platform_version
-        minimumPlatformVersion corda_platform_version
-    }
 }
 
 task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {

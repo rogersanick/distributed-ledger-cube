@@ -67,12 +67,15 @@ allprojects {
     }
 }
 
-task ganacheSetup {
+task ganache {
     subprojects {
         if (it.project.name != "clients") {
-            copy {
-                into "${rootDir}/build"
-                from "${buildDir}/libs"
+            dependsOn jar
+            doLast {
+                copy {
+                    from "${buildDir}/libs"
+                    into "${rootDir}/build/libs"
+                }
             }
         }
     }

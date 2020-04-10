@@ -52,5 +52,5 @@ task runPartyBWebServer(type: JavaExec, dependsOn: assemble) {
 task runGanacheServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.dlc.corda.webserver.ServerKt'
-    args '--server.port=10051', '--config.rpc.host=localhost', '--config.rpc.port=10000', '--config.rpc.username=user1', '--config.rpc.password=letmein'
+    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10000', '--config.rpc.username=user1', '--config.rpc.password=letmein'
 }
